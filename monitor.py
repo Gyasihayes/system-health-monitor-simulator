@@ -51,3 +51,13 @@ def run_checks():
     network_result = check_network()
     check_results = {"CPU Check": cpu_result, "Memory Check": memory_result, "Network Check": network_result}
     return check_results
+
+def log_results(results, filepath):
+    try:
+        with open(filepath, "a") as file:
+            file.write(f"Results {results}\n")
+    except Exception as error:
+        print(f"Could not write to file: {error}")
+    finally:
+        with open(filepath, "a") as file:
+            file.write("Results Logged\n")
