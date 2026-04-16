@@ -38,5 +38,16 @@ def check_network():
     try:
         network_data = network_monitor.get_network_metrics()
         if network_data['usage_percent'] > NETWORK_THRESHOLD:
-            raise ConnectionTimeoutError
-    
+            raise ThresholdExceededError("Network Threshhold Exceeded")
+        return {"Status": "Healthy", "Data": network_data}
+    except ConnectionTimeoutError:
+        return{"Status": "Error", "Data": "Coonection Timeout"}
+    except ThresholdExceededError as error:
+        return{"Status": "Error", "Data": str(error)}
+
+def run_checks():
+    cpu_result = check_cpu()
+    memory_result = check_memory()
+    network_result = check_network()
+    check_results = {"CPU Check": cpu_result, "Memory Check": memory_result, "Network Check": network_result}
+    return check_results
