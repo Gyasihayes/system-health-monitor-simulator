@@ -41,7 +41,7 @@ def check_network():
             raise ThresholdExceededError("Network Threshhold Exceeded")
         return {"Status": "Healthy", "Data": network_data}
     except ConnectionTimeoutError:
-        return{"Status": "Error", "Data": "Coonection Timeout"}
+        return{"Status": "Error", "Data": "Connection Timeout"}
     except ThresholdExceededError as error:
         return{"Status": "Error", "Data": str(error)}
 
@@ -61,3 +61,11 @@ def log_results(results, filepath):
     finally:
         with open(filepath, "a") as file:
             file.write("Results Logged\n")
+
+def generate_report(results):
+    report = "SYSTEM REPORT\n"
+    for check_type in results:
+        status = results[check_type]["Status"]
+        report += (f"{check_type}: {status}\n")
+    return report
+
