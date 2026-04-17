@@ -1,5 +1,5 @@
 # Gyasi Hayes
-# 04/**/2026
+# 04/17/2026
 # 
 import cpu_monitor
 import memory_monitor
@@ -38,7 +38,7 @@ def check_network():
     try:
         network_data = network_monitor.get_network_metrics()
         if network_data['usage_percent'] > NETWORK_THRESHOLD:
-            raise ThresholdExceededError("Network Threshhold Exceeded")
+            raise ThresholdExceededError("Network Threshold Exceeded")
         return {"Status": "Healthy", "Data": network_data}
     except ConnectionTimeoutError:
         return{"Status": "Error", "Data": "Connection Timeout"}
@@ -56,11 +56,9 @@ def log_results(results, filepath):
     try:
         with open(filepath, "a") as file:
             file.write(f"Results {results}\n")
+            file.write("Results Logged\n")
     except Exception as error:
         print(f"Could not write to file: {error}")
-    finally:
-        with open(filepath, "a") as file:
-            file.write("Results Logged\n")
 
 def generate_report(results):
     report = "SYSTEM REPORT\n"
@@ -69,3 +67,11 @@ def generate_report(results):
         report += (f"{check_type}: {status}\n")
     return report
 
+def main():
+    check_results = run_checks()
+    report_string = generate_report(check_results)
+    print (report_string)
+    log_results(check_results, "monitor.log")
+
+if __name__ == "__main__":
+    main()
