@@ -15,41 +15,37 @@ def check_cpu():
         cpu_data = cpu_monitor.get_cpu_metrics()
         if cpu_data['usage_percent'] > CPU_THRESHOLD:
             raise ThresholdExceededError("CPU Threshold Exceeded")
-        return{"Status": "Healthy", "Data": cpu_data}
-   
+        return{"status": "healthy", "data": cpu_data}
     except ServiceUnavailableError:
-        return{"Status": "Error", "Data": "Service Unavailable"}
-
-    except ThresholdExceededError as error:
-        return{"Status": "Error", "Data": str(error)}
+        return{"status": "error", "data": "Service Unavailable"}
     
 def check_memory():
     try:
         memory_data = memory_monitor.get_memory_metrics()
         if memory_data['usage_percent'] > MEMORY_THRESHOLD:
             raise ThresholdExceededError("Memory Threshold Exceeded")
-        return{"Status": "Healthy", "Data": memory_data}
+        return{"status": "healthy", "data": memory_data}
     except DataCorruptionError:
-        return{"Status": "Error", "Data": "Data Corrupted"}
+        return{"status": "error", "data": "Data Corrupted"}
     except ThresholdExceededError as error:
-        return{"Status": "Error", "Data": str(error)}
+        return{"status": "error", "data": str(error)}
     
 def check_network():
     try:
         network_data = network_monitor.get_network_metrics()
         if network_data['usage_percent'] > NETWORK_THRESHOLD:
             raise ThresholdExceededError("Network Threshold Exceeded")
-        return {"Status": "Healthy", "Data": network_data}
+        return {"status": "healthy", "data": network_data}
     except ConnectionTimeoutError:
-        return{"Status": "Error", "Data": "Connection Timeout"}
+        return{"status": "error", "data": "Connection Timeout"}
     except ThresholdExceededError as error:
-        return{"Status": "Error", "Data": str(error)}
+        return{"status": "error", "data": str(error)}
 
 def run_checks():
     cpu_result = check_cpu()
     memory_result = check_memory()
     network_result = check_network()
-    check_results = {"CPU Check": cpu_result, "Memory Check": memory_result, "Network Check": network_result}
+    check_results = {"cpu": cpu_result, "memory": memory_result, "network": network_result}
     return check_results
 
 def log_results(results, filepath):
@@ -63,7 +59,7 @@ def log_results(results, filepath):
 def generate_report(results):
     report = "SYSTEM REPORT\n"
     for check_type in results:
-        status = results[check_type]["Status"]
+        status = results[check_type]["status"]
         report += (f"{check_type}: {status}\n")
     return report
 
