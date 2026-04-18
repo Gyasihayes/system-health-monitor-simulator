@@ -27,8 +27,6 @@ def check_memory():
         return{"status": "healthy", "data": memory_data}
     except DataCorruptionError:
         return{"status": "error", "data": "Data Corrupted"}
-    except ThresholdExceededError as error:
-        return{"status": "error", "data": str(error)}
     
 def check_network():
     try:
@@ -38,8 +36,7 @@ def check_network():
         return {"status": "healthy", "data": network_data}
     except ConnectionTimeoutError:
         return{"status": "error", "data": "Connection Timeout"}
-    except ThresholdExceededError as error:
-        return{"status": "error", "data": str(error)}
+
 
 def run_checks():
     cpu_result = check_cpu()
@@ -64,10 +61,14 @@ def generate_report(results):
     return report
 
 def main():
-    check_results = run_checks()
-    report_string = generate_report(check_results)
-    print (report_string)
-    log_results(check_results, "monitor.log")
+    try:    
+        check_results = run_checks()
+        report_string = generate_report(check_results)
+        print (report_string)
+        log_results(check_results, "monitor.log")
+    except ThresholdExceededError as error:
+        print(f"Error: {error}")
+
 
 if __name__ == "__main__":
     main()
