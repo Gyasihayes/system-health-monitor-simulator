@@ -1,8 +1,3 @@
-# ============================================================
-# network_monitor.py - Project 3: System Health Monitor
-# Provided module - do not modify
-# ============================================================
-
 from exceptions import ConnectionTimeoutError
 
 
